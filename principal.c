@@ -14,7 +14,7 @@ char arquivoProfessores[50] = "professores.txt";
 char arquivoDisciplinas[50] = "disciplinas.txt";
 
 void iniciarArquivo(char *nomeArquivo) {
-  FILE *fw = fopen(nomeArquivo, "a");
+  FILE *fw = fopen(nomeArquivo, "a+");
 
   fgetc(fw);
 
@@ -152,7 +152,6 @@ void menu() {
 
         else if (opcao == 4) {
           // TODO - chamar função para excluir disciplina por id
-
         }
       } while(opcao != 5);
 
