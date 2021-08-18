@@ -153,10 +153,10 @@ int verificarSeAssociacaoExistePorProfessorEDisciplina(int idProfessor, int idDi
       }
     }
 
-    return existe;
   }
 
   fclose(fr);
+  return existe;
 }
 
 int verificarSeAssociacaoExistePorProfessor(int idProfessor) {
@@ -189,11 +189,10 @@ int verificarSeAssociacaoExistePorProfessor(int idProfessor) {
         break;
       }
     }
-
-    return existe;
   }
 
   fclose(fr);
+  return existe;
 }
 
 int verificarSeAssociacaoExistePorDisciplina(int idDisciplina) {
@@ -227,10 +226,10 @@ int verificarSeAssociacaoExistePorDisciplina(int idDisciplina) {
       }
     }
 
-    return existe;
   }
 
   fclose(fr);
+  return existe;
 }
 
 int verificarSeProfessorExistePorId(int idProfessor) {
@@ -265,11 +264,10 @@ int verificarSeProfessorExistePorId(int idProfessor) {
         break;
       }
     }
-
-    return existe;
   }
 
   fclose(fr);
+  return existe;
 }
 
 int verificarSeDisciplinaExistePorId(int idDisciplina) {
@@ -302,11 +300,10 @@ int verificarSeDisciplinaExistePorId(int idDisciplina) {
         break;
       }
     }
-
-    return existe;
   }
 
   fclose(fr);
+  return existe;
 }
 
 void listarProfessoresDisciplinas(ProfessorDisciplina *professoresDisciplinas) {
