@@ -61,8 +61,8 @@ void carregarProfessores(Professor *professores) {
       }
 
       fscanf(fr, "%d", &(professores[i].id));
-      fscanf(fr, "%s", &(professores[i].nome));
-      fscanf(fr, "%s", &(professores[i].formacao));
+      fscanf(fr, "%s", (professores[i].nome));
+      fscanf(fr, "%s", (professores[i].formacao));
       fscanf(fr, "%f", &(professores[i].salario));
     }
   }
@@ -88,7 +88,7 @@ void carregarDisciplinas(Disciplina *disciplinas) {
       }
 
       fscanf(fr, "%d", &(disciplinas[i].id));
-      fscanf(fr, "%s", &(disciplinas[i].nome));
+      fscanf(fr, "%s", (disciplinas[i].nome));
       fscanf(fr, "%d", &(disciplinas[i].cargaHoraria));
     }
   }
@@ -256,8 +256,8 @@ int verificarSeProfessorExistePorId(int idProfessor) {
       float salario;
 
       fscanf(fr, "%d", &idAtual);
-      fscanf(fr, " %[^\n]", nome);
-      fscanf(fr, " %[^\n]", formacao);
+      fscanf(fr, "%s", nome);
+      fscanf(fr, "%s", formacao);
       fscanf(fr, "%f", &salario);
 
       if (idAtual == idProfessor) {
@@ -294,7 +294,7 @@ int verificarSeDisciplinaExistePorId(int idDisciplina) {
       int cargaHoraria;
 
       fscanf(fr, "%d", &idAtual);
-      fscanf(fr, " %[^\n]", &nome);
+      fscanf(fr, "%s", nome);
       fscanf(fr, "%d", &cargaHoraria);
 
       if (idDisciplina == idAtual) {
