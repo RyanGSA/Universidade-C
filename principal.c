@@ -503,68 +503,6 @@ void removerProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas
   fclose(fr);
 }
 
-void removerProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas) {
-  int idProfessorDisciplina;
-
-  printf("\nInforme o id: ");
-  scanf("%d", &idProfessorDisciplina);
-
-  FILE *fr = fopen(arquivoProfessoresDisciplinas, "r");
-
-  int quantidadeProfessoresDisciplinas;
-  int numeroUltimoId;
-
-  fscanf(fr, "%d", &quantidadeProfessoresDisciplinas);
-  fscanf(fr, "%d", &numeroUltimoId);
-
-  fclose(fr);
-
-  if (quantidadeProfessoresDisciplinas > 0) {
-    int existe = 0;
-
-    for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-      if (professoresDisciplinas[i].id == idProfessorDisciplina) {
-        existe = 1;
-      }
-    }
-
-    if (existe == 1) {
-      FILE *fw = fopen(arquivoProfessoresDisciplinas, "w");
-
-      fprintf(fw, "%d\n", (quantidadeProfessoresDisciplinas - 1));
-      fprintf(fw, "%d\n", professoresDisciplinas[quantidadeProfessoresDisciplinas - 1].id);
-
-      for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-        if (professoresDisciplinas[i].id != idProfessorDisciplina) {
-          fprintf(fw, "%d\n", professoresDisciplinas[i].id);
-          fprintf(fw, "%d\n", professoresDisciplinas[i].idProfessor);
-          fprintf(fw, "%d\n", professoresDisciplinas[i].idDisciplina);
-        }
-      }
-
-      printf("\n");
-
-      fclose(fw);
-
-      carregarProfessoresDisciplinas(professoresDisciplinas);
-
-      printf("\nASSOCIACAO REMOVIDA COM SUCESSO!");
-    }
-
-    else {
-      printf("\n\nASSOCIACAO NAO ENCONTRADA!");
-    }
-  }
-
-  else {
-    printf("\n\nNAO EXISTE NENHUM PROFESSOR ASSOCIADO A UMA DISCIPLINA!");
-  }
-
-  printf("\n\n\n");
-
-  fclose(fr);
-}
-
 void menu() {
   Professor *professores = (Professor*) malloc(sizeof(Professor));
   Disciplina *disciplinas = (Disciplina*) malloc(sizeof(Disciplina));
