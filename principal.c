@@ -31,7 +31,7 @@ char arquivoDisciplinas[50] = "disciplinas.txt";
 char arquivoProfessoresDisciplinas[50] = "professores_disciplinas.txt";
 
 void iniciarArquivo(char *nomeArquivo) {
-  FILE *fa = fopen(nomeArquivo, "a+");
+  FILE *fa = fopen(nomeArquivo, "a");
 
   fgetc(fa);
 
@@ -44,7 +44,7 @@ void iniciarArquivo(char *nomeArquivo) {
 }
 
 void carregarProfessores(Professor **professores) {
-  FILE *fr = fopen(arquivoProfessores, "r+");
+  FILE *fr = fopen(arquivoProfessores, "r");
 
   int quantidadeProfessores;
   int numeroUltimoId;
@@ -71,7 +71,7 @@ void carregarProfessores(Professor **professores) {
 }
 
 void carregarDisciplinas(Disciplina **disciplinas) {
-  FILE *fr = fopen(arquivoDisciplinas, "r+");
+  FILE *fr = fopen(arquivoDisciplinas, "r");
 
   int quantidadeDisciplinas;
   int numeroUltimoId;
@@ -97,7 +97,7 @@ void carregarDisciplinas(Disciplina **disciplinas) {
 }
 
 void carregarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) {
-  FILE *fr = fopen(arquivoProfessoresDisciplinas, "r+");
+  FILE *fr = fopen(arquivoProfessoresDisciplinas, "r");
 
   int quantidadeProfessoresDisciplinas;
   int numeroUltimoId;
@@ -307,7 +307,7 @@ int verificarSeDisciplinaExistePorId(int idDisciplina) {
 }
 
 void listarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) {
-  FILE *fr = fopen(arquivoProfessoresDisciplinas, "r+");
+  FILE *fr = fopen(arquivoProfessoresDisciplinas, "r");
 
   int quantidadeProfessoresDisciplinas;
   int numeroUltimoId;
@@ -389,7 +389,7 @@ void inserirProfessorDisciplina(ProfessorDisciplina **professoresDisciplinas) {
   int professorDisciplinaJaExiste = verificarSeAssociacaoExistePorProfessorEDisciplina(idProfessor, idDisciplina);
 
   if (professorDisciplinaJaExiste == 0 && professorJaExiste == 1 && disciplinaJaExiste == 1) {
-    FILE *fr = fopen(arquivoProfessoresDisciplinas, "a+");
+    FILE *fr = fopen(arquivoProfessoresDisciplinas, "r");
 
     int quantidadeProfessoresDisciplinas;
     int numeroUltimoId;
