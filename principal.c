@@ -43,7 +43,7 @@ void iniciarArquivo(char *nomeArquivo) {
   fclose(fa);
 }
 
-void carregarProfessores(Professor *professores) {
+void carregarProfessores(Professor **professores) {
   FILE *fr = fopen(arquivoProfessores, "r+");
 
   int quantidadeProfessores;
@@ -53,24 +53,24 @@ void carregarProfessores(Professor *professores) {
   fscanf(fr, "%d", &numeroUltimoId);
 
   if (quantidadeProfessores > 0) {
-    professores = (Professor*) realloc(professores, sizeof(Professor) * quantidadeProfessores);
+    *professores = realloc(*professores, sizeof(Professor) * quantidadeProfessores);
 
     for (int i = 0; i < quantidadeProfessores; i++) {
       if (feof(fr)) {
         break;
       }
 
-      fscanf(fr, "%d", &(professores[i].id));
-      fscanf(fr, "%s", (professores[i].nome));
-      fscanf(fr, "%s", (professores[i].formacao));
-      fscanf(fr, "%f", &(professores[i].salario));
+      fscanf(fr, "%d", &(*professores)[i].id);
+      fscanf(fr, " %[^\n]", (*professores)[i].nome);
+      fscanf(fr, " %[^\n]", (*professores)[i].formacao);
+      fscanf(fr, "%f", &(*professores)[i].salario);
     }
   }
 
   fclose(fr);
 }
 
-void carregarDisciplinas(Disciplina *disciplinas) {
+void carregarDisciplinas(Disciplina **disciplinas) {
   FILE *fr = fopen(arquivoDisciplinas, "r+");
 
   int quantidadeDisciplinas;
@@ -80,23 +80,23 @@ void carregarDisciplinas(Disciplina *disciplinas) {
   fscanf(fr, "%d", &numeroUltimoId);
 
   if (quantidadeDisciplinas > 0) {
-    disciplinas = (Disciplina*) realloc(disciplinas, sizeof(Disciplina) * quantidadeDisciplinas);
+    *disciplinas = realloc(*disciplinas, sizeof(Disciplina) * quantidadeDisciplinas);
 
     for (int i = 0; i < quantidadeDisciplinas; i++) {
       if (feof(fr)) {
         break;
       }
 
-      fscanf(fr, "%d", &(disciplinas[i].id));
-      fscanf(fr, "%s", (disciplinas[i].nome));
-      fscanf(fr, "%d", &(disciplinas[i].cargaHoraria));
+      fscanf(fr, "%d", &(*disciplinas)[i].id);
+      fscanf(fr, " %[^\n]", (*disciplinas)[i].nome);
+      fscanf(fr, "%d", &(*disciplinas)[i].cargaHoraria);
     }
   }
 
   fclose(fr);
 }
 
-void carregarProfessoresDisciplinas(ProfessorDisciplina *professoresDisciplinas) {
+void carregarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) {
   FILE *fr = fopen(arquivoProfessoresDisciplinas, "r+");
 
   int quantidadeProfessoresDisciplinas;
@@ -106,16 +106,16 @@ void carregarProfessoresDisciplinas(ProfessorDisciplina *professoresDisciplinas)
   fscanf(fr, "%d", &numeroUltimoId);
 
   if (quantidadeProfessoresDisciplinas > 0) {
-    professoresDisciplinas = (ProfessorDisciplina*) realloc(professoresDisciplinas, sizeof(ProfessorDisciplina) * quantidadeProfessoresDisciplinas);
+    *professoresDisciplinas = realloc(*professoresDisciplinas, sizeof(ProfessorDisciplina) * quantidadeProfessoresDisciplinas);
 
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
       if (feof(fr)) {
         break;
       }
 
-      fscanf(fr, "%d", &(professoresDisciplinas[i].id));
-      fscanf(fr, "%d", &(professoresDisciplinas[i].idProfessor));
-      fscanf(fr, "%d", &(professoresDisciplinas[i].idDisciplina));
+      fscanf(fr, "%d", &(*professoresDisciplinas)[i].id);
+      fscanf(fr, "%d", &(*professoresDisciplinas)[i].idProfessor);
+      fscanf(fr, "%d", &(*professoresDisciplinas)[i].idDisciplina);
     }
   }
 
@@ -306,7 +306,7 @@ int verificarSeDisciplinaExistePorId(int idDisciplina) {
   return existe;
 }
 
-void listarProfessoresDisciplinas(ProfessorDisciplina *professoresDisciplinas) {
+void listarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) {
   FILE *fr = fopen(arquivoProfessoresDisciplinas, "r+");
 
   int quantidadeProfessoresDisciplinas;
@@ -317,9 +317,9 @@ void listarProfessoresDisciplinas(ProfessorDisciplina *professoresDisciplinas) {
 
   if (quantidadeProfessoresDisciplinas > 0) {
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-      printf("\nid: %d\n", professoresDisciplinas[i].id);
-      printf("id do professor: %d\n", professoresDisciplinas[i].idProfessor);
-      printf("id da disciplina: %d\n", professoresDisciplinas[i].idDisciplina);
+      printf("\nid: %d\n", (*professoresDisciplinas)[i].id);
+      printf("id do professor: %d\n", (*professoresDisciplinas)[i].idProfessor);
+      printf("id da disciplina: %d\n", (*professoresDisciplinas)[i].idDisciplina);
     }
   }
 
@@ -332,7 +332,7 @@ void listarProfessoresDisciplinas(ProfessorDisciplina *professoresDisciplinas) {
   fclose(fr);
 }
 
-void listarProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas) {
+void listarProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplinas) {
   int idProfessorDisciplina;
 
   printf("\nInforme o id: ");
@@ -351,11 +351,11 @@ void listarProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas)
 
     int existe = 0;
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-      if (professoresDisciplinas[i].id == idProfessorDisciplina) {
+      if ((*professoresDisciplinas)[i].id == idProfessorDisciplina) {
         existe = 1;
-        printf("\nid: %d\n", professoresDisciplinas[i].id);
-        printf("id do professor: %d\n", professoresDisciplinas[i].idProfessor);
-        printf("id da disciplina: %d\n", professoresDisciplinas[i].idDisciplina);
+        printf("\nid: %d\n", (*professoresDisciplinas)[i].id);
+        printf("id do professor: %d\n", (*professoresDisciplinas)[i].idProfessor);
+        printf("id da disciplina: %d\n", (*professoresDisciplinas)[i].idDisciplina);
       }
     }
 
@@ -374,7 +374,7 @@ void listarProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas)
 }
 
 
-void inserirProfessorDisciplina(ProfessorDisciplina *professoresDisciplinas) {
+void inserirProfessorDisciplina(ProfessorDisciplina **professoresDisciplinas) {
   int idProfessor;
   int idDisciplina;
 
@@ -401,26 +401,23 @@ void inserirProfessorDisciplina(ProfessorDisciplina *professoresDisciplinas) {
 
     quantidadeProfessoresDisciplinas++;
 
-    professoresDisciplinas = (ProfessorDisciplina*) realloc(professoresDisciplinas, sizeof(ProfessorDisciplina) * quantidadeProfessoresDisciplinas);
-    professoresDisciplinas[quantidadeProfessoresDisciplinas - 1].id = numeroUltimoId + 1;
-    professoresDisciplinas[quantidadeProfessoresDisciplinas - 1].idProfessor = idProfessor;
-    professoresDisciplinas[quantidadeProfessoresDisciplinas - 1].idDisciplina = idDisciplina;
+    *professoresDisciplinas = realloc(*professoresDisciplinas, sizeof(ProfessorDisciplina) * quantidadeProfessoresDisciplinas);
+    (*professoresDisciplinas)[quantidadeProfessoresDisciplinas - 1].id = numeroUltimoId + 1;
+    (*professoresDisciplinas)[quantidadeProfessoresDisciplinas - 1].idProfessor = idProfessor;
+    (*professoresDisciplinas)[quantidadeProfessoresDisciplinas - 1].idDisciplina = idDisciplina;
 
     FILE *fw = fopen(arquivoProfessoresDisciplinas, "w");
 
     fprintf(fw, "%d\n", quantidadeProfessoresDisciplinas);
-    fprintf(fw, "%d\n", professoresDisciplinas[quantidadeProfessoresDisciplinas - 1].id);
+    fprintf(fw, "%d\n", (*professoresDisciplinas)[quantidadeProfessoresDisciplinas - 1].id);
 
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-      fprintf(fw, "%d\n", professoresDisciplinas[i].id);
-      fprintf(fw, "%d\n", professoresDisciplinas[i].idProfessor);
-      fprintf(fw, "%d\n", professoresDisciplinas[i].idDisciplina);
+      fprintf(fw, "%d\n", (*professoresDisciplinas)[i].id);
+      fprintf(fw, "%d\n", (*professoresDisciplinas)[i].idProfessor);
+      fprintf(fw, "%d\n", (*professoresDisciplinas)[i].idDisciplina);
     }
 
     fclose(fw);
-
-    carregarProfessoresDisciplinas(professoresDisciplinas);
-
     printf("\n\nASSOCIACAO INSERIDA COM SUCESSO!\n\n\n");
   }
 
@@ -438,7 +435,7 @@ void inserirProfessorDisciplina(ProfessorDisciplina *professoresDisciplinas) {
 
 }
 
-void removerProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas) {
+void removerProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplinas) {
   int idProfessorDisciplina;
 
   printf("\nInforme o id: ");
@@ -458,7 +455,7 @@ void removerProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas
     int existe = 0;
 
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-      if (professoresDisciplinas[i].id == idProfessorDisciplina) {
+      if ((*professoresDisciplinas)[i].id == idProfessorDisciplina) {
         existe = 1;
       }
     }
@@ -467,13 +464,13 @@ void removerProfessorDisciplinaPorId(ProfessorDisciplina *professoresDisciplinas
       FILE *fw = fopen(arquivoProfessoresDisciplinas, "w");
 
       fprintf(fw, "%d\n", (quantidadeProfessoresDisciplinas - 1));
-      fprintf(fw, "%d\n", professoresDisciplinas[quantidadeProfessoresDisciplinas - 1].id);
+      fprintf(fw, "%d\n", (*professoresDisciplinas)[quantidadeProfessoresDisciplinas - 1].id);
 
       for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-        if (professoresDisciplinas[i].id != idProfessorDisciplina) {
-          fprintf(fw, "%d\n", professoresDisciplinas[i].id);
-          fprintf(fw, "%d\n", professoresDisciplinas[i].idProfessor);
-          fprintf(fw, "%d\n", professoresDisciplinas[i].idDisciplina);
+        if ((*professoresDisciplinas)[i].id != idProfessorDisciplina) {
+          fprintf(fw, "%d\n", (*professoresDisciplinas)[i].id);
+          fprintf(fw, "%d\n", (*professoresDisciplinas)[i].idProfessor);
+          fprintf(fw, "%d\n", (*professoresDisciplinas)[i].idDisciplina);
         }
       }
 
@@ -505,9 +502,9 @@ void menu() {
   Disciplina *disciplinas = (Disciplina*) malloc(sizeof(Disciplina));
   ProfessorDisciplina *professoresDisciplinas = (ProfessorDisciplina*) malloc(sizeof(ProfessorDisciplina));
 
-  carregarProfessores(professores);
-  carregarDisciplinas(disciplinas);
-  carregarProfessoresDisciplinas(professoresDisciplinas);
+  carregarProfessores(&professores);
+  carregarDisciplinas(&disciplinas);
+  carregarProfessoresDisciplinas(&professoresDisciplinas);
 
   int categoria;
 
@@ -612,19 +609,19 @@ void menu() {
         printf("\n");
 
         if (opcao == 1) {
-          listarProfessoresDisciplinas(professoresDisciplinas);
+          listarProfessoresDisciplinas(&professoresDisciplinas);
         }
 
         else if (opcao == 2) {
-          listarProfessorDisciplinaPorId(professoresDisciplinas);
+          listarProfessorDisciplinaPorId(&professoresDisciplinas);
         }
 
         else if (opcao == 3) {
-          inserirProfessorDisciplina(professoresDisciplinas);
+          inserirProfessorDisciplina(&professoresDisciplinas);
         }
 
         else if (opcao == 4) {
-          removerProfessorDisciplinaPorId(professoresDisciplinas);
+          removerProfessorDisciplinaPorId(&professoresDisciplinas);
         }
       } while(opcao != 5);
 
@@ -633,6 +630,8 @@ void menu() {
 
   } while(categoria != 4);
 
+  free(professores);
+  free(disciplinas);
   free(professoresDisciplinas);
 
   printf("\nPROGRAMA ENCERRADO!\n");
