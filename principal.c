@@ -31,7 +31,7 @@ char arquivoDisciplinas[50] = "disciplinas.txt";
 char arquivoProfessoresDisciplinas[50] = "professores_disciplinas.txt";
 
 void iniciarArquivo(char *nomeArquivo) {
-  FILE *fa = fopen(nomeArquivo, "a");
+  FILE *fa = fopen(nomeArquivo, "a+");
 
   fgetc(fa);
 
