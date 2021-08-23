@@ -31,7 +31,7 @@ char arquivoDisciplinas[50] = "disciplinas.txt";
 char arquivoProfessoresDisciplinas[50] = "professores_disciplinas.txt";
 
 void iniciarArquivo(char *nomeArquivo) {
-  FILE *fa = fopen(nomeArquivo, "a");
+  FILE *fa = fopen(nomeArquivo, "a+");
 
   fgetc(fa);
 
@@ -306,6 +306,123 @@ int verificarSeDisciplinaExistePorId(int idDisciplina) {
   return existe;
 }
 
+Professor retornaProfessorPorId(int idProfessor) {
+  FILE *fr = fopen(arquivoProfessores, "r");
+
+  int quantidadeProfessores;
+  int numeroUltimoId;
+
+  fscanf(fr, "%d", &quantidadeProfessores);
+  fscanf(fr, "%d", &numeroUltimoId);
+
+  Professor professorEncontrado;
+
+  if (quantidadeProfessores > 0) {
+    for (int i = 0; i < quantidadeProfessores; i++) {
+      if (feof(fr)) {
+        break;
+      }
+
+      int idAtual;
+      char nome[100];
+      char formacao[50];
+      float salario;
+
+      fscanf(fr, "%d", &idAtual);
+      fscanf(fr, "%s", nome);
+      fscanf(fr, "%s", formacao);
+      fscanf(fr, "%f", &salario);
+
+      if (idAtual == idProfessor) {
+        professorEncontrado.id = idAtual;
+
+        for (int i = 0 ; i < 100; i++) {
+          professorEncontrado.nome[i] = nome[i];
+        }
+
+        for (int i = 0 ; i < 100; i++) {
+          professorEncontrado.formacao[i] = formacao[i];
+        }
+
+        professorEncontrado.salario = salario;
+        break;
+      }
+    }
+  }
+
+  fclose(fr);
+  return professorEncontrado;
+}
+
+Disciplina retornaDisciplinaPorId(int idDisciplina) {
+  FILE *fr = fopen(arquivoDisciplinas, "r");
+
+  int quantidadeDisciplinas;
+  int numeroUltimoId;
+
+  fscanf(fr, "%d", &quantidadeDisciplinas);
+  fscanf(fr, "%d", &numeroUltimoId);
+
+  Disciplina disciplinaEncontrada;
+
+  if (quantidadeDisciplinas > 0) {
+    for (int i = 0; i < quantidadeDisciplinas; i++) {
+      if (feof(fr)) {
+        break;
+      }
+
+      int idAtual;
+      char nome[50];
+      int cargaHoraria;
+
+      fscanf(fr, "%d", &idAtual);
+      fscanf(fr, "%s", nome);
+      fscanf(fr, "%d", &cargaHoraria);
+
+      if (idDisciplina == idAtual) {
+        disciplinaEncontrada.id = idAtual;
+
+        for (int i = 0; i < 100; i++) {
+          disciplinaEncontrada.nome[i] = nome[i];
+        }
+
+        disciplinaEncontrada.cargaHoraria = cargaHoraria;
+        break;
+      }
+    }
+  }
+
+  fclose(fr);
+  return disciplinaEncontrada;
+}
+
+void listarProfessores(Professor **professores){
+  FILE *fr = fopen(arquivoProfessores, "r");
+
+  int quantidadeProfessores, numeroUltimoId;
+
+  fscanf(fr, "%d", &quantidadeProfessores);
+  fscanf(fr, "%d", &numeroUltimoId);
+
+  if (quantidadeProfessores > 0){
+    for(int i=0;i<quantidadeProfessores;i++){
+      printf("\n------------------------------------------------------");
+      printf("\nId: %d\n", (*professores)[i].id);
+      printf("Nome: %s\n", (*professores)[i].nome);
+      printf("Formacao: %s\n", (*professores)[i].formacao);
+      printf("Salario: R$ %.2f\n", (*professores)[i].salario);
+      printf("------------------------------------------------------\n\n");
+    }
+  }
+  else {
+    printf("\nNAO EXISTE NENHUM PROFESSOR CADASTRADO!\n\n");
+  }
+
+  printf("\n");
+
+  fclose(fr);
+}
+
 void listarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) {
   FILE *fr = fopen(arquivoProfessoresDisciplinas, "r");
 
@@ -317,17 +434,64 @@ void listarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) 
 
   if (quantidadeProfessoresDisciplinas > 0) {
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
-      printf("\nid: %d\n", (*professoresDisciplinas)[i].id);
-      printf("id do professor: %d\n", (*professoresDisciplinas)[i].idProfessor);
-      printf("id da disciplina: %d\n", (*professoresDisciplinas)[i].idDisciplina);
+      Professor professorAtual = retornaProfessorPorId((*professoresDisciplinas)[i].idProfessor);
+      Disciplina disciplinaAtual = retornaDisciplinaPorId((*professoresDisciplinas)[i].idDisciplina);
+
+      printf("\n------------------------------------------------------");
+      printf("\nId: %d\n", (*professoresDisciplinas)[i].id);
+      printf("Nome do professor: %d\n", professorAtual.nome);
+      printf("Nome da disciplina: %d\n", disciplinaAtual.nome);
+      printf("------------------------------------------------------\n\n");
     }
   }
 
   else {
-    printf("\nNAO EXISTE NENHUM PROFESSOR ASSOCIADO A UMA DISCIPLINA!\n");
+    printf("\nNAO EXISTE NENHUM PROFESSOR ASSOCIADO A UMA DISCIPLINA!\n\n");
   }
 
-  printf("\n\n");
+  printf("\n");
+
+  fclose(fr);
+}
+
+void listarProfessorPorId(Professor **professores){
+  FILE *fr = fopen(arquivoProfessores, "r");
+
+  int idProfessor;
+
+  printf("\nInforme o id do professor: ");
+  scanf("%d",&idProfessor);
+
+  int quantidadeProfessores;
+  int numeroUltimoId;
+
+  fscanf(fr, "%d", &quantidadeProfessores);
+  fscanf(fr, "%d", &numeroUltimoId);
+
+  if (quantidadeProfessores > 0){
+    int existe = verificarSeProfessorExistePorId(idProfessor);
+
+    if (existe == 1) {
+      for(int i=0;i<quantidadeProfessores;i++){
+        if ((*professores)[i].id == idProfessor){
+          printf("\n\n------------------------------------------------------");
+          printf("\nId: %d\n", (*professores)[i].id);
+          printf("Nome: %s\n", (*professores)[i].nome);
+          printf("Formacao: %s\n", (*professores)[i].formacao);
+          printf("Salario: R$ %.2f\n", (*professores)[i].salario);
+          printf("------------------------------------------------------\n\n");
+        }
+      }
+    }
+    else {
+      printf("\n\nPROFESSOR NAO ENCONTRADO!\n\n");
+    }
+  }
+  else {
+    printf("\n\nNAO EXISTE NENHUM PROFESSOR CADASTRADO!\n\n");
+  }
+
+  printf("\n");
 
   fclose(fr);
 }
@@ -352,27 +516,71 @@ void listarProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplinas
     int existe = 0;
     for (int i = 0; i < quantidadeProfessoresDisciplinas; i++) {
       if ((*professoresDisciplinas)[i].id == idProfessorDisciplina) {
-        existe = 1;
-        printf("\nid: %d\n", (*professoresDisciplinas)[i].id);
-        printf("id do professor: %d\n", (*professoresDisciplinas)[i].idProfessor);
-        printf("id da disciplina: %d\n", (*professoresDisciplinas)[i].idDisciplina);
+        Professor professorAtual = retornaProfessorPorId((*professoresDisciplinas)[i].idProfessor);
+        Disciplina disciplinaAtual = retornaDisciplinaPorId((*professoresDisciplinas)[i].idDisciplina);
+
+        printf("\n------------------------------------------------------");
+        printf("\nId: %d\n", (*professoresDisciplinas)[i].id);
+        printf("Nome do professor: %d\n", professorAtual.nome);
+        printf("Nome da disciplina: %d\n", disciplinaAtual.nome);
+        printf("------------------------------------------------------\n\n");
       }
     }
 
     if (existe == 0) {
-      printf("\nASSOCIACAO NAO ENCONTRADA!\n");
+      printf("\nASSOCIACAO NAO ENCONTRADA!\n\n");
     }
   }
 
   else {
-    printf("\n\nNAO EXISTE NENHUM PROFESSOR ASSOCIADO A UMA DISCIPLINA!\n");
+    printf("\n\nNAO EXISTE NENHUM PROFESSOR ASSOCIADO A UMA DISCIPLINA!\n\n");
   }
 
-  printf("\n\n");
+  printf("\n");
 
   fclose(fr);
 }
 
+void inserirProfessor(Professor **professores){
+  FILE *fr = fopen(arquivoProfessores, "r");
+
+  int quantidadeProfessores, numeroUltimoId;
+
+  fscanf(fr, "%d", &quantidadeProfessores);
+  fscanf(fr, "%d", &numeroUltimoId);
+
+  fclose(fr);
+
+  quantidadeProfessores++;
+  numeroUltimoId++;
+
+  *professores = realloc(*professores, sizeof(Professor) * quantidadeProfessores);
+
+  printf("\nInforme o nome do professor: ");
+  scanf(" %[^\n]", (*professores)[quantidadeProfessores - 1].nome);
+  printf("Informe a formacao do professor: ");
+  scanf(" %[^\n]", (*professores)[quantidadeProfessores - 1].formacao);
+  printf("Informe o salario do professor, em reais: ");
+  scanf("%f", &(*professores)[quantidadeProfessores - 1].salario);
+
+  (*professores)[quantidadeProfessores - 1].id = numeroUltimoId;
+
+  FILE *fw = fopen(arquivoProfessores, "w");
+
+  fprintf(fw, "%d\n", quantidadeProfessores);
+  fprintf(fw, "%d\n", numeroUltimoId);
+
+  for(int i = 0; i < quantidadeProfessores; i++){
+    fprintf(fw, "%d\n",(*professores)[i].id);
+    fprintf(fw, "%s\n", (*professores)[i].nome);
+    fprintf(fw, "%s\n", (*professores)[i].formacao);
+    fprintf(fw, "%.2f\n", (*professores)[i].salario);
+  }
+
+  printf("\n\nPROFESSOR INSERIDO COM SUCESSO!\n\n\n");
+
+  fclose(fw);
+}
 
 void inserirProfessorDisciplina(ProfessorDisciplina **professoresDisciplinas) {
   int idProfessor;
@@ -432,7 +640,71 @@ void inserirProfessorDisciplina(ProfessorDisciplina **professoresDisciplinas) {
   else if (professorDisciplinaJaExiste == 1) {
     printf("\n\nASSOCIACAO JA EXISTE!\n\n\n");
   }
+}
 
+void removerProfessorPorId(Professor **professores){
+  FILE *fr = fopen(arquivoProfessores, "r");
+
+  int quantidadeProfessores, numeroUltimoId;
+  int idProfessor;
+
+  fscanf(fr, "%d", &quantidadeProfessores);
+  fscanf(fr, "%d", &numeroUltimoId);
+
+  fclose(fr);
+
+  printf("\nInforme o id: ");
+  scanf("%d", &idProfessor);
+
+  if (quantidadeProfessores > 0) {
+    int existe = 0;
+
+    for (int i = 0; i < quantidadeProfessores; i++) {
+      if ((*professores)[i].id == idProfessor) {
+        existe = 1;
+      }
+    }
+
+    if(existe == 1) {
+      int existeAssociacao = verificarSeAssociacaoExistePorProfessor(idProfessor);
+
+      if(existeAssociacao == 0){
+        FILE *fw = fopen(arquivoProfessores, "w");
+
+        fprintf(fw, "%d\n", quantidadeProfessores-1);
+        fprintf(fw, "%d\n", numeroUltimoId);
+
+        for(int i = 0; i < quantidadeProfessores; i++){
+          if((*professores)[i].id != idProfessor){
+            fprintf(fw, "%d\n", (*professores)[i].id);
+            fprintf(fw, "%s\n", (*professores)[i].nome);
+            fprintf(fw, "%s\n", (*professores)[i].formacao);
+            fprintf(fw, "%.2f\n", (*professores)[i].salario);
+          }
+        }
+
+        printf("\n\nPROFESSOR EXCLUIDO COM SUCESSO!");
+        fclose(fw);
+      }
+
+      else {
+        printf("\n\nPROFESSOR ESTA ASSOCIADO A UMA DISCIPLINA");
+      }
+    }
+
+    else {
+      printf("\n\nPROFESSOR NAO ENCONTRADO!");
+    }
+  }
+
+  else {
+    printf("\n\nNAO EXISTE NENHUM PROFESSOR!");
+  }
+
+  printf("\n\n\n");
+
+  carregarProfessores(professores);
+  fclose(fr);
 }
 
 void removerProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplinas) {
@@ -474,13 +746,11 @@ void removerProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplina
         }
       }
 
-      printf("\n");
-
       fclose(fw);
 
       carregarProfessoresDisciplinas(professoresDisciplinas);
 
-      printf("\nASSOCIACAO REMOVIDA COM SUCESSO!");
+      printf("\n\nASSOCIACAO REMOVIDA COM SUCESSO!");
     }
 
     else {
@@ -536,22 +806,22 @@ void menu() {
         scanf("%d", &opcao);
         printf("\n");
 
-        if (opcao == 1) {
-          // TODO - chamar função para imprimir todos os professores
-        }
+          if (opcao == 1) {
+              listarProfessores(&professores);
+          }
 
-        else if (opcao == 2) {
-          // TODO - chamar função para imprimir o professor por id
-        }
+          else if (opcao == 2) {
+              listarProfessorPorId(&professores);
+          }
 
-        else if (opcao == 3) {
-          // TODO - chamar função para inserir professor
-        }
+          else if (opcao == 3) {
+              inserirProfessor(&professores);
+          }
 
-        else if (opcao == 4) {
-          // TODO - chamar função para excluir professor por id
-        }
-      } while(opcao != 5);
+          else if (opcao == 4) {
+              removerProfessorPorId(&professores);
+          }
+        } while(opcao != 5);
 
       printf("\n\n");
     }
