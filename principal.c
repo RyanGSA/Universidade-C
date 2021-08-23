@@ -422,6 +422,33 @@ void listarProfessores(Professor **professores){
 
   fclose(fr);
 }
+void listarDisciplina(Disciplina **disciplinas){
+
+    FILE *fld = fopen(arquivoDisciplinas, "r");
+
+    int quantidadeDisciplinas;
+    int numeroUltimoId;
+
+    fscanf(fld, "%d", &quantidadeDisciplinas);
+    fscanf(fld, "%d", &numeroUltimoId);
+
+
+        if (quantidadeDisciplinas > 0){
+        printf("Disciplinas:\n");
+
+        printf("\n----------------------\n");
+    for (int i = 0; i < quantidadeDisciplinas; i++) {
+
+        printf("ID: %d\n", (*disciplinas)[i].id);
+        printf("Nome: %s\n", (*disciplinas)[i].nome);
+        printf("Carga horaria:%d Horas\n", (*disciplinas)[i].cargaHoraria);
+        printf("----------------------\n\n");
+            }
+        }else{
+        printf("\n\nNENHUMA DISCIPLINA CADASTRADA!!\n\n\n");
+        }
+    fclose(fld);
+}
 
 void listarProfessoresDisciplinas(ProfessorDisciplina **professoresDisciplinas) {
   FILE *fr = fopen(arquivoProfessoresDisciplinas, "r");
@@ -495,6 +522,49 @@ void listarProfessorPorId(Professor **professores){
 
   fclose(fr);
 }
+void listarDisciplinaPorId(Disciplina **disciplinas){
+
+
+    FILE *fld = fopen(arquivoDisciplinas, "r");
+
+    int quantidadeDisciplinas;
+    int numeroUltimoId;
+    int IDnumb;
+
+    fscanf(fld, "%d", &quantidadeDisciplinas);
+    fscanf(fld, "%d", &numeroUltimoId);
+
+        printf("Digite o ID da disciplina: ");
+        scanf("%d", &IDnumb);
+
+    for (int i = 0; i < quantidadeDisciplinas; i++) {
+        fscanf(fld, "%d", &(*disciplinas)[i].id);
+        fscanf(fld, " %[^\n]", (*disciplinas)[i].nome);
+        fscanf(fld, "%d", &(*disciplinas)[i].cargaHoraria);
+    }
+
+    fclose(fld);
+
+    int existe = verificarSeProfessorExistePorId(IDnumb);
+
+        if (quantidadeDisciplinas > 0){
+            if (existe == 1){
+        printf("\n----------------------\n");
+        printf("ID da Disciplina: %d\n", (*disciplinas)[IDnumb].id);
+        printf("Nome: %s\n", (*disciplinas)[IDnumb].nome);
+        printf("Carga horaria:%d Horas\n", (*disciplinas)[IDnumb].cargaHoraria);
+        printf("----------------------\n\n");
+            }
+            else{
+                printf("\n\nDISCIPLINA NAO ENCONTRADO!\n\n\n");
+            }
+        }else{
+            printf("\n\nNAO EXISTE NENHUMA DISCIPLINA CADASTRADA!!\n\n\n");
+        }
+
+
+}
+
 
 void listarProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplinas) {
   int idProfessorDisciplina;
@@ -580,6 +650,50 @@ void inserirProfessor(Professor **professores){
   printf("\n\nPROFESSOR INSERIDO COM SUCESSO!\n\n\n");
 
   fclose(fw);
+}
+void inserirDisciplina(Disciplina **disciplinas){
+
+    FILE *fr = fopen(arquivoDisciplinas, "r");
+
+    int quantidadeDisciplinas;
+    int numeroUltimoId;
+
+    fscanf(fr, "%d", &quantidadeDisciplinas);
+    fscanf(fr, "%d", &numeroUltimoId);
+
+    fclose(fr);
+
+    quantidadeDisciplinas++;
+    numeroUltimoId++;
+
+    *disciplinas = realloc(*disciplinas, sizeof(Disciplina)*quantidadeDisciplinas);
+
+    printf("Informe o nome da disciplina: ");
+    scanf(" %[^\n]", (*disciplinas)[quantidadeDisciplinas-1].nome);
+    printf("Informe a carga horaria: ");
+    scanf("%d", &(*disciplinas)[quantidadeDisciplinas-1].cargaHoraria);
+
+
+    (*disciplinas)[quantidadeDisciplinas-1].id = numeroUltimoId;
+
+
+
+    FILE *fw = fopen(arquivoDisciplinas, "w");
+
+
+    fprintf(fw, "%d\n", quantidadeDisciplinas);
+    fprintf(fw, "%d\n", numeroUltimoId);
+
+    for (int i = 0; i < quantidadeDisciplinas; i++){
+        fprintf(fw, "%d\n", (*disciplinas)[i].id);
+        fprintf(fw, "%s\n", (*disciplinas)[i].nome);
+        fprintf(fw, "%d\n", (*disciplinas)[i].cargaHoraria);
+            }
+
+
+    fclose(fw);
+
+    printf("\n\nDISCIPLINA INSERIDA COM SUCESSO\n\n\n");
 }
 
 void inserirProfessorDisciplina(ProfessorDisciplina **professoresDisciplinas) {
@@ -706,6 +820,62 @@ void removerProfessorPorId(Professor **professores){
   carregarProfessores(professores);
   fclose(fr);
 }
+
+void removerDisciplinaPorId(Disciplina **disciplinas){
+
+    FILE *fld = fopen(arquivoDisciplinas, "r");
+
+    int quantidadeDisciplinas;
+    int numeroUltimoId;
+
+    int IDnumb;
+    int associacao;
+    int existe;
+
+    fscanf(fld, "%d", &quantidadeDisciplinas);
+    fscanf(fld, "%d", &numeroUltimoId);
+
+    fclose(fld);
+
+    printf("Digite o numero da disciplina a ser excluida: ");
+    scanf("%d", &IDnumb);
+
+
+    existe = verificarSeDisciplinaExistePorId(IDnumb);
+
+    if (existe == 1){
+
+    associacao = verificarSeAssociacaoExistePorDisciplina(IDnumb);
+
+        if (associacao == 0){
+    FILE *fe = fopen(arquivoDisciplinas, "w");
+
+    fprintf(fe, "%d\n", quantidadeDisciplinas-1);
+    fprintf(fe, "%d\n", numeroUltimoId);
+
+    for (int i = 0; i < quantidadeDisciplinas; i++){
+        if (i != IDnumb){
+            fprintf(fe, "%d\n", (*disciplinas)[i].id);
+            fprintf(fe, "%s\n", (*disciplinas)[i].nome);
+            fprintf(fe, "%d\n", (*disciplinas)[i].cargaHoraria);
+            }
+        }
+        printf("\n\nDISCIPLINA APAGADA COM SUCESSO!!\n\n\n");
+    carregarDisciplinas(disciplinas);
+
+    fclose(fe);
+        }
+        else{
+        printf("\n\nNAO FOI POSSIVEL EXCLUIR PORQUE A DISCIPLINA ESTA ASSOCIADA A UM PROFESSOR\n\n\n");
+        }
+    }
+    else{
+        printf("\n\nDISCIPLINA INEXISTENTE!!\n\n\n");
+    }
+
+    carregarDisciplinas(disciplinas);
+}
+
 
 void removerProfessorDisciplinaPorId(ProfessorDisciplina **professoresDisciplinas) {
   int idProfessorDisciplina;
@@ -843,19 +1013,19 @@ void menu() {
         printf("\n");
 
         if (opcao == 1) {
-          // TODO - chamar função para imprimir todas as disciplinas
+        listarDisciplina(&disciplinas);  // TODO - chamar função para imprimir todas as disciplinas
         }
 
         else if (opcao == 2) {
-          // TODO - chamar função para imprimir uma disciplina por id
+        listarDisciplinaPorId(&disciplinas);  // TODO - chamar função para imprimir uma disciplina por id
         }
 
         else if (opcao == 3) {
-          // TODO - chamar função para inserir uma disciplina
+        inserirDisciplina(&disciplinas);  // TODO - chamar função para inserir uma disciplina
         }
 
         else if (opcao == 4) {
-          // TODO - chamar função para excluir disciplina por id
+        removerDisciplinaPorId(&disciplinas);  // TODO - chamar função para excluir disciplina por id
         }
       } while(opcao != 5);
 
